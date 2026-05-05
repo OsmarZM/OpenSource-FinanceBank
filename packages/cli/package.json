@@ -1,0 +1,33 @@
+{
+  "name": "@fin-engine/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "fin-engine": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --no-dts --clean",
+    "dev": "tsx src/index.ts",
+    "demo": "tsx src/index.ts demo",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@fin-engine/connector-csv": "workspace:*",
+    "@fin-engine/connector-mock": "workspace:*",
+    "@fin-engine/connectors-base": "workspace:*",
+    "@fin-engine/core": "workspace:*",
+    "@fin-engine/types": "workspace:*",
+    "@inquirer/prompts": "^7.3.0",
+    "boxen": "^7.1.1",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "ora": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "rimraf": "^6.0.0",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "fin-engine",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "demo": "pnpm --filter @fin-engine/cli run demo",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.0",
+    "turbo": "^2.3.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.33.3"
+}

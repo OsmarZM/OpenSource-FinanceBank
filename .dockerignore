@@ -1,0 +1,40 @@
+# Git
+.git/
+.gitignore
+
+# Node
+node_modules/
+.pnpm-store/
+
+# Build outputs — rebuilt inside Docker
+**/dist/
+**/*.tsbuildinfo
+.turbo/
+
+# Environment — NEVER in image
+.env
+.Env
+.env.*
+!.env.example
+
+# Python virtualenvs
+**/.venv/
+**/venv/
+**/__pycache__/
+**/*.pyc
+**/.mypy_cache/
+**/.ruff_cache/
+**/.pytest_cache/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# Data files
+data/
+
+# Docs (not needed in runtime image)
+docs/

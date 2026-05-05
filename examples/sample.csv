@@ -1,0 +1,56 @@
+date,description,amount,type,category
+2024-01-05,Salário — Empresa Exemplo,8000.00,credit,income
+2024-01-07,Aluguel,-2500.00,debit,housing
+2024-01-10,Condomínio,-500.00,debit,housing
+2024-01-10,Internet Vivo Fibra,-120.00,debit,utilities
+2024-01-12,Supermercado Pão de Açúcar,-287.50,debit,food
+2024-01-14,iFood,-45.90,debit,food
+2024-01-15,Netflix,-55.90,debit,subscription
+2024-01-15,Spotify,-21.90,debit,subscription
+2024-01-16,Uber,-23.00,debit,transport
+2024-01-17,Posto Ipiranga,-165.00,debit,transport
+2024-01-18,Restaurante do Bairro,-62.00,debit,food
+2024-01-20,Academia SmartFit,-99.90,debit,health
+2024-01-22,Supermercado Carrefour,-310.00,debit,food
+2024-01-23,iFood,-38.00,debit,food
+2024-01-25,Energia Elétrica CEMIG,-185.00,debit,utilities
+2024-01-26,Água SABESP,-65.00,debit,utilities
+2024-01-28,Drogasil,-42.00,debit,health
+2024-01-29,Cinema Cinemark,-48.00,debit,entertainment
+2024-01-30,Tesouro Direto — Aplicação,-500.00,debit,investment
+2024-02-05,Salário — Empresa Exemplo,8000.00,credit,income
+2024-02-07,Aluguel,-2500.00,debit,housing
+2024-02-10,Condomínio,-500.00,debit,housing
+2024-02-10,Internet Vivo Fibra,-120.00,debit,utilities
+2024-02-12,Supermercado Extra,-295.00,debit,food
+2024-02-14,iFood,-52.00,debit,food
+2024-02-15,Netflix,-55.90,debit,subscription
+2024-02-15,Spotify,-21.90,debit,subscription
+2024-02-18,Uber,-19.00,debit,transport
+2024-02-19,iFood,-67.00,debit,food
+2024-02-20,Academia SmartFit,-99.90,debit,health
+2024-02-22,Supermercado Pão de Açúcar,-330.00,debit,food
+2024-02-25,Energia Elétrica CEMIG,-192.00,debit,utilities
+2024-02-26,Água SABESP,-65.00,debit,utilities
+2024-02-27,Freelance — Projeto Web,1500.00,credit,income
+2024-02-28,Tesouro Direto — Aplicação,-500.00,debit,investment
+2024-03-05,Salário — Empresa Exemplo,8000.00,credit,income
+2024-03-07,Aluguel,-2500.00,debit,housing
+2024-03-10,Condomínio,-500.00,debit,housing
+2024-03-10,Internet Vivo Fibra,-120.00,debit,utilities
+2024-03-12,Supermercado Carrefour,-390.00,debit,food
+2024-03-13,iFood,-78.00,debit,food
+2024-03-14,iFood,-55.00,debit,food
+2024-03-15,Netflix,-55.90,debit,subscription
+2024-03-15,Spotify,-21.90,debit,subscription
+2024-03-17,Uber,-31.00,debit,transport
+2024-03-18,Posto Ipiranga,-175.00,debit,transport
+2024-03-19,Restaurante Sushi Osaka,-95.00,debit,food
+2024-03-20,Academia SmartFit,-99.90,debit,health
+2024-03-22,Supermercado Atacadão,-420.00,debit,food
+2024-03-23,iFood,-62.00,debit,food
+2024-03-25,Energia Elétrica CEMIG,-198.00,debit,utilities
+2024-03-26,Água SABESP,-65.00,debit,utilities
+2024-03-27,Renner — Roupas,-220.00,debit,shopping
+2024-03-28,Show — Ticket Master,-180.00,debit,entertainment
+2024-03-30,Tesouro Direto — Aplicação,-500.00,debit,investment

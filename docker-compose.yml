@@ -1,0 +1,98 @@
+version: '3.9'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# FinEngine OSS — Docker Compose
+#
+# Services:
+#   fin-engine   Node.js CLI (interactive)
+#   agents       Python LLM sidecar (optional — only when LLM_PROVIDER != none)
+#
+# Usage:
+#   docker compose run --rm fin-engine demo       # run demo
+#   docker compose run --rm fin-engine start      # interactive mode
+#   docker compose up agents                      # start Python sidecar
+#
+# Create a .env file from .env.example and fill in your keys.
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Main CLI service ─────────────────────────────────────────────────────
+  fin-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: fin-engine:latest
+    container_name: fin-engine
+
+    # Pass ALL env vars through from host .env
+    environment:
+      NODE_ENV: production
+      LLM_PROVIDER: ${LLM_PROVIDER:-none}
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
+
+    # Mount local CSV files into the container
+    volumes:
+      - ./examples:/app/examples:ro
+      - ./data:/app/data   # local CSV files go here
+
+    # Required for interactive CLI (select prompts, colored output)
+    stdin_open: true
+    tty: true
+
+    # Override command at runtime, e.g:
+    #   docker compose run --rm fin-engine demo
+    command: ["node", "packages/cli/dist/index.js", "start"]
+
+    profiles:
+      - default
+
+  # ── Python LLM Agents sidecar ────────────────────────────────────────────
+  agents:
+    build:
+      context: services/agents
+      dockerfile: Dockerfile
+    image: fin-engine-agents:latest
+    container_name: fin-engine-agents
+
+    environment:
+      LLM_PROVIDER: ${LLM_PROVIDER:-none}
+      LLM_MODEL: ${LLM_MODEL:-}
+      # AWS Bedrock
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      # OpenAI
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      # Anthropic
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      # Ollama (point to host machine if running locally)
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      # Gemini
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+
+    stdin_open: true
+    tty: true
+
+    profiles:
+      - ai   # Only started when: docker compose --profile ai up
+
+  # ── Ollama (local AI, no cloud needed) ───────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: fin-engine-ollama
+
+    volumes:
+      - ollama_data:/root/.ollama
+
+    ports:
+      - "11434:11434"
+
+    profiles:
+      - ollama   # Only started when: docker compose --profile ollama up
+
+volumes:
+  ollama_data:
