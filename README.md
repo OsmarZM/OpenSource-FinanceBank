@@ -14,8 +14,9 @@ Conecte suas contas, importe CSVs, gere insights — com ou sem IA.
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://python.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Open Source](https://img.shields.io/badge/Open-Source-ff69b4.svg)](https://opensource.org)
+[![Demo Online](https://img.shields.io/badge/Demo-Online-blue?logo=vercel&logoColor=white)](https://open-source-finance-bank-web.vercel.app/)
 
-[📖 Documentação](#-documentação) • [🚀 Quick Start](#-quick-start-30-segundos) • [🤝 Contribuir](CONTRIBUTING.md) • [🐛 Issues](https://github.com/OsmarZM/OpenSource-FinanceBank/issues)
+[🌐 Demo Online](https://open-source-finance-bank-web.vercel.app/) • [📖 Documentação](#-documentação) • [🚀 Quick Start](#-quick-start-30-segundos) • [🤝 Contribuir](CONTRIBUTING.md) • [🐛 Issues](https://github.com/OsmarZM/OpenSource-FinanceBank/issues)
 
 </div>
 
@@ -34,6 +35,7 @@ Conecte suas contas, importe CSVs, gere insights — com ou sem IA.
 - [Connectors](#-connectors)
 - [Integração com IA](#-integração-com-ia)
 - [Banco de Dados (Supabase)](#-banco-de-dados-supabase)
+- [Dashboard Web](#-dashboard-web)
 - [Docker](#-docker)
 - [Roadmap](#-roadmap)
 - [Documentação Completa](#-documentação)
@@ -80,6 +82,7 @@ Tudo funciona **offline**, sem enviar seus dados para nenhum servidor externo (e
 - 🔍 **Detecção de padrões** — Tendências de alta/baixa, assinaturas recorrentes, poupança baixa
 - 💡 **Insights rule-based** — Análise sem IA, instantânea
 - 🖥️ **CLI colorida e interativa** — Interface terminal com gráficos de barras
+- 🎨 **Dashboard Web** — Next.js + Tailwind, gráficos interativos, deploy no Vercel → [abrir demo](https://open-source-finance-bank-web.vercel.app/)
 
 ### Fase 2 — Em desenvolvimento 🔧
 - 🏦 **Pluggy Connector** — Open Finance, +300 bancos brasileiros
@@ -88,7 +91,6 @@ Tudo funciona **offline**, sem enviar seus dados para nenhum servidor externo (e
 ### Fase 3+ — Roadmap 📋
 - 🤖 **AI Agents** — LLM provider plugável (Bedrock, OpenAI, Anthropic, Ollama, Gemini)
 - 🌍 **OpenBB Enrichment** — IPCA, CDI, câmbio em contexto
-- 🎨 **Dashboard Web** — Next.js + shadcn/ui
 
 ---
 
@@ -197,7 +199,7 @@ flowchart TD
     subgraph OUTPUT["📤 Output"]
         CLI[CLI Terminal]
         API[REST API<br/>opcional]
-        DASH[Dashboard Web<br/>Phase 5]
+        DASH[Dashboard Web<br/>✅ Next.js + Vercel]
     end
 
     CSV --> CORE
@@ -266,6 +268,10 @@ fin-engine/
 │   └── openbb-enricher/              # Dados macroeconômicos — Fase 4
 │
 ├── apps/
+│   ├── web/                          # Dashboard Web (Next.js + Tailwind — deploy Vercel)
+│   │   ├── src/app/                  # App Router Next.js
+│   │   ├── src/components/          # Dashboard, Charts, SummaryCard, etc.
+│   │   └── src/lib/                  # engine.ts, metrics.ts, mock-data.ts
 │   ├── demo/                         # Uso programático (sem CLI)
 │   └── playground/                   # Ambiente de testes manuais
 │
@@ -573,6 +579,41 @@ Veja o guia completo em [docs/07-database-supabase.md](docs/07-database-supabase
 
 ---
 
+## 🎨 Dashboard Web
+
+O FinEngine OSS possui um **Dashboard Web** interativo, com visualização de dados financeiros em tempo real.
+
+🌐 **Demo online:** [https://open-source-finance-bank-web.vercel.app/](https://open-source-finance-bank-web.vercel.app/)
+
+### Funcionalidades do Dashboard
+
+- 📊 **Cards de Resumo** — Receitas, Despesas, Saldo e Taxa de Poupança
+- 📈 **Gráfico Mensal** — Evolução de receitas e despesas por mês
+- 🍩 **Gráfico por Categoria** — Distribuição de gastos por categoria
+- 💡 **Insights** — Alertas e recomendações automáticas
+- 📋 **Lista de Transações** — Histórico detalhado com categorias e status
+- ⚡ **Skeleton Loading** — Animações enquanto os dados carregam
+- 🛡️ **Tratamento de Erros** — Mensagem amigável em caso de falha na API
+
+### Stack
+
+| Tecnologia | Uso |
+|---|---|
+| Next.js 15 (App Router) | Framework React |
+| Tailwind CSS | Estilização |
+| Vercel | Deploy / Hospedagem |
+
+### Rodar localmente
+
+```bash
+cd apps/web
+pnpm install
+pnpm dev
+# Acesse http://localhost:3000
+```
+
+---
+
 ## 🐳 Docker
 
 ### Modo mais simples
@@ -619,6 +660,7 @@ gantt
     dateFormat  YYYY-MM
     section Fase 1 — Fundação
     CLI + Mock + CSV + Engine     :done,    f1, 2026-05, 2026-05
+    Dashboard Web (Next.js)       :done,    f1b, 2026-05, 2026-05
     section Fase 2 — Open Finance
     Pluggy Connector              :active,  f2, 2026-06, 2026-07
     Persistência Supabase         :active,  f2b, 2026-06, 2026-07
@@ -627,8 +669,6 @@ gantt
     Plugin System (entry points)  :         f3b, 2026-08, 2026-08
     section Fase 4 — Enriquecimento
     OpenBB (IPCA, CDI, câmbio)    :         f4, 2026-08, 2026-09
-    section Fase 5 — Dashboard
-    Next.js + shadcn/ui           :         f5, 2026-09, 2026-11
 ```
 
 ---
