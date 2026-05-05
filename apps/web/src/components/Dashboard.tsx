@@ -35,7 +35,8 @@ export default function Dashboard() {
         setLoading(false)
       })
       .catch((e: Error) => {
-        setError(e.message)
+        setError('Falha ao carregar os dados financeiros. Tente novamente.')
+        console.error(e)
         setLoading(false)
       })
   }, [])
