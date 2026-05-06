@@ -70,10 +70,10 @@ export default function Dashboard() {
   }
 
   function connectPluggyById(itemId: string) {
-    // Called when Pluggy Connect widget succeeds — load data using the real item
-    void itemId // itemId stored server-side; fetching via /api/pluggy uses auto-discovery
+    // Called when Pluggy Connect widget succeeds — pass itemId so the API
+    // uses GET /items/:id instead of the unsupported GET /items endpoint
     setPluggyLoading(true)
-    loadData('/api/pluggy', 'pluggy')
+    loadData(`/api/pluggy?itemId=${encodeURIComponent(itemId)}`, 'pluggy')
     setPluggyLoading(false)
   }
 

@@ -86,6 +86,32 @@ class PortfolioRequest(BaseModel):
     holdings: list[Holding]
 
 
+# ─── OBBject helpers ────────────────────────────────────────────────────────
+def _to_records(result: Any) -> list[dict[str, Any]]:
+    """
+    Normalise OBBject.to_dict() output to a list of record dicts.
+
+    Older OpenBB versions returned {"results": [{...}, ...]}.
+    Newer versions return a columnar dict {"col": [v0, v1, ...], ...}.
+    This helper handles both shapes.
+    """
+    raw = result.to_dict()
+    if not raw:
+        return []
+    # Old format: {"results": [...]}
+    if "results" in raw and isinstance(raw["results"], list):
+        return raw["results"]
+    # Columnar format: {"symbol": ["^BVSP"], "open": [186762.11], ...}
+    if isinstance(raw, dict):
+        first_val = next(iter(raw.values()), None)
+        n = len(first_val) if isinstance(first_val, list) else 1
+        return [
+            {k: (v[i] if isinstance(v, list) else v) for k, v in raw.items()}
+            for i in range(n)
+        ]
+    return []
+
+
 # ─── Health ──────────────────────────────────────────────────────────────────
 @app.get("/health")
 def health() -> dict[str, str]:
@@ -104,7 +130,7 @@ def get_quote(symbol: str) -> dict[str, Any]:
     try:
         obb = get_obb()
         result = obb.equity.price.quote(symbol=symbol, provider="yfinance")
-        data = result.to_dict()["results"]
+        data = _to_records(result)
         if not data:
             raise HTTPException(status_code=404, detail=f"No quote found for {symbol}")
         return {"symbol": symbol, "quote": data[0]}
@@ -134,7 +160,7 @@ def get_historical(
             "symbol": symbol,
             "from": start,
             "to": end,
-            "data": result.to_dict()["results"],
+            "data": _to_records(result),
         }
     except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=502, detail=str(e)) from e
@@ -157,7 +183,7 @@ def get_index(
         result = obb.index.price.historical(
             symbol=name, start_date=start, end_date=end, provider="yfinance",
         )
-        return {"index": name, "from": start, "to": end, "data": result.to_dict()["results"]}
+        return {"index": name, "from": start, "to": end, "data": _to_records(result)}
     except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=502, detail=str(e)) from e
 
@@ -176,13 +202,12 @@ def get_fx(
     start = from_date or str(date.today() - timedelta(days=30))
     try:
         obb = get_obb()
-        # OpenBB expects base/quote split
-        base = pair[:3].upper()
-        quote = pair[3:].upper()
+        # yfinance expects "USDBRL=X" format for FX pairs
+        ticker = f"{pair.upper()}=X" if "=" not in pair else pair.upper()
         result = obb.currency.price.historical(
-            symbol=f"{base}/{quote}", start_date=start, end_date=end, provider="yfinance",
+            symbol=ticker, start_date=start, end_date=end, provider="yfinance",
         )
-        return {"pair": pair, "from": start, "to": end, "data": result.to_dict()["results"]}
+        return {"pair": pair, "from": start, "to": end, "data": _to_records(result)}
     except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=502, detail=str(e)) from e
 
@@ -214,9 +239,12 @@ def get_portfolio_value(body: PortfolioRequest) -> dict[str, Any]:
     for holding in body.holdings:
         try:
             res = obb.equity.price.quote(symbol=holding.symbol, provider="yfinance")
-            data = res.to_dict()["results"]
+            data = _to_records(res)
             if data:
-                price: float = float(data[0].get("last_price") or data[0].get("close") or 0)
+                price: float = float(
+                    data[0].get("last_price") or data[0].get("close")
+                    or data[0].get("prev_close") or data[0].get("open") or 0
+                )
                 value = price * holding.quantity
                 total += value
                 positions.append({
@@ -242,7 +270,7 @@ def widgets_manifest() -> list[dict[str, Any]]:
     OpenBB Workspace custom backend widget definitions.
     See: https://docs.openbb.co/workspace/custom-backend
     """
-    base_url = os.getenv("OPENBB_SELF_URL", "http://localhost:8001")
+    base_url = os.getenv("OPENBB_SELF_URL", "http://localhost:3004")
     return [
         {
             "id": "finengine_transactions",

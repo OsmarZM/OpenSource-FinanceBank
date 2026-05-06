@@ -39,11 +39,11 @@ export default function CategoryChart({ data }: Props) {
   const top = data.slice(0, 8)
 
   return (
-    <div ref={ref} className="glass-card p-6">
+    <div ref={ref} className="glass-card p-6 flex flex-col h-full">
       <h2 className="text-lg font-semibold text-white mb-1">Gastos por Categoria</h2>
       <p className="text-sm text-gray-500 mb-5">Top {top.length} categorias de despesas</p>
 
-      <div className="space-y-4">
+      <div className="space-y-4 overflow-y-auto pr-2" style={{ maxHeight: 'calc(100vh - 300px)' }}>
         {top.map((cat, i) => (
           <div key={cat.category} className="group">
             <div className="flex items-center justify-between mb-1.5">

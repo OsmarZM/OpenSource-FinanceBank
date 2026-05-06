@@ -15,7 +15,7 @@ Interface web moderna para o **FinEngine OSS**, construída com Next.js 15, Tail
 pnpm dev
 ```
 
-Acesse: [http://localhost:3000](http://localhost:3000)
+Acesse: [http://localhost:3002](http://localhost:3002)
 
 ## Deploy no Vercel
 

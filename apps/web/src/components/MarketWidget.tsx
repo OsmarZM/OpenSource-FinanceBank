@@ -6,6 +6,8 @@ import { formatBRL } from '@/lib/format'
 interface QuoteData {
   last_price?: number
   close?: number
+  prev_close?: number
+  open?: number
   change_percent?: number
   [key: string]: unknown
 }
@@ -33,8 +35,9 @@ interface MarketSnapshot {
   usdbrl: FxResult | null
 }
 
-function getPrice(q: QuoteData): number {
-  return Number(q.last_price ?? q.close ?? 0)
+function getPrice(q: QuoteData | undefined): number {
+  if (!q) return 0
+  return Number(q.last_price ?? q.close ?? q.prev_close ?? q.open ?? 0)
 }
 
 function formatChange(pct: number | undefined): string {
@@ -110,9 +113,9 @@ export default function MarketWidget() {
           fetch('/api/market/fx/USDBRL').then((r) => r.json() as Promise<FxResult>),
         ])
 
-        const ibov = ibovRes.status === 'fulfilled' && !ibovRes.value.error ? ibovRes.value : null
-        const sp500 = sp500Res.status === 'fulfilled' && !sp500Res.value.error ? sp500Res.value : null
-        const usdbrl = usdbrlRes.status === 'fulfilled' && !usdbrlRes.value.error ? usdbrlRes.value : null
+        const ibov = ibovRes.status === 'fulfilled' && !ibovRes.value.error && ibovRes.value.quote ? ibovRes.value : null
+        const sp500 = sp500Res.status === 'fulfilled' && !sp500Res.value.error && sp500Res.value.quote ? sp500Res.value : null
+        const usdbrl = usdbrlRes.status === 'fulfilled' && !usdbrlRes.value.error && Array.isArray(usdbrlRes.value.data) ? usdbrlRes.value : null
 
         if (!ibov && !sp500 && !usdbrl) {
           setOffline(true)

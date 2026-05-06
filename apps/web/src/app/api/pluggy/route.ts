@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PluggyConnector } from '@fin-engine/connector-pluggy'
 import { FinancialEngine } from '@fin-engine/core'
 
@@ -6,11 +6,14 @@ export const runtime = 'nodejs'
 // Disable static caching — Pluggy data is live
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const clientId = process.env['PLUGGY_CLIENT_ID']
   const clientSecret = process.env['PLUGGY_CLIENT_SECRET']
-  // itemId is optional — auto-discovered from GET /items if not set
-  const itemId = process.env['PLUGGY_SANDBOX_ITEM_ID'] || undefined
+  // Prefer itemId from query string (passed by the Connect widget), then env var
+  const itemId =
+    req.nextUrl.searchParams.get('itemId') ||
+    process.env['PLUGGY_SANDBOX_ITEM_ID'] ||
+    undefined
 
   if (!clientId || !clientSecret) {
     return NextResponse.json(
@@ -19,6 +22,16 @@ export async function GET() {
         hint: 'Set PLUGGY_CLIENT_ID and PLUGGY_CLIENT_SECRET in .env',
       },
       { status: 503 },
+    )
+  }
+
+  if (!itemId) {
+    return NextResponse.json(
+      {
+        error: 'Item ID not provided',
+        hint: 'Connect a bank account via the widget first, or set PLUGGY_SANDBOX_ITEM_ID in .env.local',
+      },
+      { status: 400 },
     )
   }
 

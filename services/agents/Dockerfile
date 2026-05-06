@@ -19,6 +19,8 @@ RUN uv pip install --system \
 
 COPY src/ ./src/
 
+ENV PYTHONPATH=/app/src
+
 EXPOSE 8000
 
 # HTTP mode by default (docker); stdio mode available via: python -m agents
