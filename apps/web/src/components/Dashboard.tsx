@@ -9,6 +9,7 @@ import InsightsList from './InsightsList'
 import TransactionList from './TransactionList'
 import AIInsights from './AIInsights'
 import MarketWidget from './MarketWidget'
+import PluggyConnectButton from './PluggyConnectButton'
 import { formatBRL } from '@/lib/format'
 
 function Skeleton({ className = '' }: { className?: string }) {
@@ -68,6 +69,14 @@ export default function Dashboard() {
     setPluggyLoading(false)
   }
 
+  function connectPluggyById(itemId: string) {
+    // Called when Pluggy Connect widget succeeds — load data using the real item
+    void itemId // itemId stored server-side; fetching via /api/pluggy uses auto-discovery
+    setPluggyLoading(true)
+    loadData('/api/pluggy', 'pluggy')
+    setPluggyLoading(false)
+  }
+
   function loadMock() {
     loadData('/api/analyze', 'mock')
   }
@@ -121,13 +130,20 @@ export default function Dashboard() {
               </div>
             )}
             {/* Source switcher buttons */}
-            <button
-              onClick={source === 'mock' ? connectPluggy : loadMock}
-              disabled={loading || pluggyLoading}
-              className="text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:bg-blue-600/20 hover:border-blue-500/30 hover:text-blue-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              {source === 'mock' ? '🔗 Pluggy sandbox' : '🔄 Voltar mock'}
-            </button>
+            {source === 'pluggy' ? (
+              <button
+                onClick={loadMock}
+                disabled={loading}
+                className="text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                🔄 Voltar mock
+              </button>
+            ) : (
+              <PluggyConnectButton
+                onSuccess={connectPluggyById}
+                label="🔗 Conectar banco"
+              />
+            )}
           </div>
         </div>
       </header>
