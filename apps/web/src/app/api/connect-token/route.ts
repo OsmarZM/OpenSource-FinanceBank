@@ -39,9 +39,33 @@ export async function POST(req: NextRequest) {
   try {
     const pluggy = new PluggyClient({ clientId, clientSecret })
 
+    // Build Connect Token options
+    const appUrl = process.env['NEXT_PUBLIC_APP_URL']
+    const webhookSecret = process.env['PLUGGY_WEBHOOK_SECRET']
+
+    // Passing webhookUrl ensures events from items created via this token
+    // are routed to our webhook endpoint, even without a global webhook.
+    // Only attach when the URL is HTTPS (Pluggy rejects http://).
+    const webhookUrl =
+      appUrl && appUrl.startsWith('https://')
+        ? `${appUrl}/api/webhooks/pluggy`
+        : undefined
+
+    const tokenOptions: Record<string, unknown> = {}
+    if (clientUserId) tokenOptions['clientUserId'] = clientUserId
+    if (webhookUrl) {
+      tokenOptions['webhookUrl'] = webhookUrl
+      // Pass the secret header so the webhook handler can verify origin
+      if (webhookSecret) {
+        tokenOptions['webhookHeaders'] = { 'x-pluggy-webhook-secret': webhookSecret }
+      }
+    }
+
     const connectToken = await pluggy.createConnectToken(
       undefined, // itemId — omit to allow connecting any bank
-      clientUserId ? { clientUserId } : undefined,
+      Object.keys(tokenOptions).length > 0
+        ? (tokenOptions as Parameters<typeof pluggy.createConnectToken>[1])
+        : undefined,
     )
 
     return NextResponse.json({ accessToken: connectToken.accessToken })

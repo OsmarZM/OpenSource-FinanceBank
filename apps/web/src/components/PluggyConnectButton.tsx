@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import dynamic from 'next/dynamic'
 
 // react-pluggy-connect accesses `window` — must be loaded client-side only
@@ -84,14 +85,15 @@ export default function PluggyConnectButton({ onSuccess, label = '🔗 Conectar 
         <p className="text-xs text-red-400 mt-1">{errorMsg}</p>
       )}
 
-      {status === 'open' && connectToken && (
+      {status === 'open' && connectToken && typeof document !== 'undefined' && createPortal(
         <PluggyConnect
           connectToken={connectToken}
           includeSandbox={true}
           onSuccess={handleSuccess}
           onError={handleError}
           onClose={handleClose}
-        />
+        />,
+        document.body,
       )}
     </>
   )
