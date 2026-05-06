@@ -1,0 +1,49 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Environment
+.env.local
+.env.*.local
+
+# Documentation
+docs/
+README.md
+CONTRIBUTING.md
+
+# Development
+node_modules/
+.turbo/
+coverage/
+.next/cache
+
+# Python
+services/
+__pycache__/
+venv/
+.venv/
+
+# Package managers
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts (except what Next.js needs)
+dist/
+build/
+*.tsbuildinfo
+
+# Examples
+examples/
+scripts/

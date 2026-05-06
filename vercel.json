@@ -1,3 +1,16 @@
 {
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "root": "apps/web",
+  "buildCommand": "cd ../.. && pnpm install && pnpm run build --filter @fin-engine/web",
+  "devCommand": "pnpm dev --filter @fin-engine/web",
+  "installCommand": "corepack enable pnpm && pnpm install --frozen-lockfile",
+  "env": [
+    "PLUGGY_CLIENT_ID",
+    "PLUGGY_CLIENT_SECRET",
+    "OPENBB_URL",
+    "AWS_BEARER_TOKEN_BEDROCK",
+    "AWS_REGION",
+    "BEDROCK_MODEL_ID",
+    "NEXT_PUBLIC_APP_URL"
+  ]
 }
