@@ -314,13 +314,31 @@ export default function Dashboard() {
               transition={{ delay: 0.5 }}
             >
               <AIInsights
-                data={data}
-                onInsights={(insights, usage) => {
-                  setAiInsights(insights)
-                  setAiUsage(usage)
+                engineResult={data}
+                insights={aiInsights}
+                loading={aiLoading}
+                error={aiError}
+                usage={aiUsage}
+                onGenerate={() => {
+                  setAiLoading(true)
+                  setAiError(null)
+                  fetch('/api/insights', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                  })
+                    .then((r) => r.json())
+                    .then((res: { insights?: Insight[]; error?: string; usage?: { input_tokens: number; output_tokens: number; estimated_cost_usd: number } }) => {
+                      if (res.error) throw new Error(res.error)
+                      setAiInsights(res.insights ?? [])
+                      setAiUsage(res.usage ?? null)
+                      setAiLoading(false)
+                    })
+                    .catch((e: Error) => {
+                      setAiError(e.message || 'Falha ao gerar insights.')
+                      setAiLoading(false)
+                    })
                 }}
-                onError={setAiError}
-                onLoading={setAiLoading}
               />
             </motion.section>
           )}
