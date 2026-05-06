@@ -13,9 +13,23 @@ import {
   HelpCircle,
   LogOut,
   ChevronRight,
+  type LucideIcon,
 } from 'lucide-react'
 
-const SETTINGS_SECTIONS = [
+interface SettingsItem {
+  label: string
+  value: string
+  icon?: LucideIcon
+  toggle?: boolean
+}
+
+interface SettingsSection {
+  title: string
+  icon: LucideIcon
+  items: SettingsItem[]
+}
+
+const SETTINGS_SECTIONS: SettingsSection[] = [
   {
     title: 'Aparência',
     icon: Palette,
