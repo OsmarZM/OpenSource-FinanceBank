@@ -141,7 +141,7 @@ export default function AnimatedCard({
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={clsx('text-xl sm:text-2xl font-bold break-all', colorClass.text)}
+          className={clsx('text-xl sm:text-2xl font-bold break-words', colorClass.text)}
         >
           {value}
         </motion.p>
