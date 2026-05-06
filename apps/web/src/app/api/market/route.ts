@@ -156,47 +156,4 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     )
   }
-      {
-        symbol: 'GOLD',
-        name: 'Ouro',
-        price: 2380,
-        change: 35,
-        changePercent: 1.49,
-        high: 2390,
-        low: 2360,
-      },
-      {
-        symbol: 'BTC',
-        name: 'Bitcoin',
-        price: 64250,
-        change: 1500,
-        changePercent: 2.38,
-        high: 65200,
-        low: 63100,
-      },
-    ]
-
-    return NextResponse.json({
-      indices: mockIndices,
-      commodities: mockCommodities,
-      crypto: [
-        {
-          symbol: 'ETH',
-          name: 'Ethereum',
-          price: 3450,
-          change: 95,
-          changePercent: 2.83,
-          high: 3500,
-          low: 3380,
-        },
-      ],
-      timestamp: new Date().toISOString(),
-    })
-  } catch (error) {
-    console.error('Market API error:', error)
-    return NextResponse.json(
-      { error: 'Falha ao carregar dados de mercado' },
-      { status: 500 }
-    )
-  }
 }

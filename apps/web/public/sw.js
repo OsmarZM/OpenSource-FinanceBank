@@ -6,7 +6,7 @@ const URLS_TO_CACHE = [
 ]
 
 // Install event - cache essential files
-self.addEventListener('install', (event: any) => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(URLS_TO_CACHE)
@@ -16,7 +16,7 @@ self.addEventListener('install', (event: any) => {
 })
 
 // Activate event - clean old caches
-self.addEventListener('activate', (event: any) => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -30,7 +30,7 @@ self.addEventListener('activate', (event: any) => {
 })
 
 // Fetch event - network first with cache fallback
-self.addEventListener('fetch', (event: any) => {
+self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') {
     return
@@ -68,7 +68,7 @@ self.addEventListener('fetch', (event: any) => {
 })
 
 // Handle message from client
-self.addEventListener('message', (event: any) => {
+self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting()
   }
