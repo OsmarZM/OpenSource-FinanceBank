@@ -49,7 +49,7 @@ export default function MonthlyChart({ data }: Props) {
     <div className="glass-card p-6">
       <h2 className="text-lg font-semibold text-white mb-1">Evolução Mensal</h2>
       <p className="text-sm text-gray-500 mb-5">Receitas e despesas por mês</p>
-      <ResponsiveContainer width="100%" height={240}>
+      <ResponsiveContainer width="100%" height={320}>
         <AreaChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="gradIncome" x1="0" y1="0" x2="0" y2="1">

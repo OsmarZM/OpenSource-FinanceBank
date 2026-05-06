@@ -43,7 +43,7 @@ export default function CategoryChart({ data }: Props) {
       <h2 className="text-lg font-semibold text-white mb-1">Gastos por Categoria</h2>
       <p className="text-sm text-gray-500 mb-5">Top {top.length} categorias de despesas</p>
 
-      <div className="space-y-4 overflow-y-auto pr-2" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+      <div className="space-y-4 overflow-y-auto pr-2" style={{ maxHeight: '280px' }}>
         {top.map((cat, i) => (
           <div key={cat.category} className="group">
             <div className="flex items-center justify-between mb-1.5">
