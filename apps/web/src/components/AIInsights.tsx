@@ -2,11 +2,18 @@
 
 import type { EngineResult, Insight } from '@/lib/types'
 
+interface UsageStats {
+  input_tokens: number
+  output_tokens: number
+  estimated_cost_usd: number
+}
+
 interface Props {
   engineResult: EngineResult
   insights: Insight[] | null
   loading: boolean
   error: string | null
+  usage?: UsageStats | null
   onGenerate: () => void
 }
 
@@ -39,7 +46,7 @@ function InsightSkeleton() {
   )
 }
 
-export default function AIInsights({ insights, loading, error, onGenerate }: Props) {
+export default function AIInsights({ insights, loading, error, usage, onGenerate }: Props) {
   const sorted = insights
     ? [...insights].sort((a, b) => {
         const order = { danger: 0, warning: 1, success: 2, info: 3 }
@@ -61,6 +68,19 @@ export default function AIInsights({ insights, loading, error, onGenerate }: Pro
           <p className="text-sm text-gray-500">
             Análise gerada por Claude Haiku 4.5 via AWS Bedrock
           </p>
+          {/* Cost badge — shown after a successful generation */}
+          {usage && (
+            <div className="flex items-center gap-3 mt-2">
+              <span className="text-xs text-gray-600 font-mono">
+                {usage.input_tokens.toLocaleString()} in · {usage.output_tokens.toLocaleString()} out tokens
+              </span>
+              <span className="text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-mono">
+                ~${usage.estimated_cost_usd < 0.001
+                  ? usage.estimated_cost_usd.toFixed(6)
+                  : usage.estimated_cost_usd.toFixed(4)} USD
+              </span>
+            </div>
+          )}
         </div>
 
         <button

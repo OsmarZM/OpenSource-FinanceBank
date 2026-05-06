@@ -11,13 +11,19 @@ export interface PluggyConnectorOptions {
   clientSecret: string
   /**
    * The Item ID to fetch transactions from.
-   * In sandbox mode, use one of Pluggy's sandbox Item IDs.
+   * If not provided, the first item from GET /items is used automatically.
    */
-  itemId: string
+  itemId?: string
   /** ISO 8601 date string — defaults to 90 days ago */
   dateFrom?: string
   /** ISO 8601 date string — defaults to today */
   dateTo?: string
+}
+
+export interface PluggyItem {
+  id: string
+  status: string
+  connector?: { name: string }
 }
 
 // ---------------------------------------------------------------------------
@@ -64,7 +70,7 @@ export class PluggyConnector extends BaseConnector {
 
   private apiKey: string | null = null
 
-  constructor(private readonly options: PluggyConnectorOptions) {
+  constructor(private options: PluggyConnectorOptions) {
     super()
   }
 
@@ -92,13 +98,36 @@ export class PluggyConnector extends BaseConnector {
   }
 
   /**
+   * Lists all Items (bank connections) for this client.
+   * Requires connect() to have been called first.
+   */
+  async listItems(): Promise<PluggyItem[]> {
+    if (!this.apiKey) {
+      throw new Error('PluggyConnector: call connect() before listItems()')
+    }
+    const data = await this._fetch<{ total: number; results: PluggyItem[] }>('/items')
+    return data.results
+  }
+
+  /**
    * Fetches all accounts for the configured Item, then retrieves all
    * transactions (paginated) for each account, and normalizes them to
    * the FinEngine Transaction shape.
+   *
+   * If itemId was not provided in options, auto-discovers the first available item.
    */
   async getTransactions(): Promise<Transaction[]> {
     if (!this.apiKey) {
       throw new Error('PluggyConnector: call connect() before getTransactions()')
+    }
+
+    // Auto-discover itemId if not set
+    if (!this.options.itemId) {
+      const items = await this.listItems()
+      if (!items.length) {
+        throw new Error('Pluggy: no items found for this client — connect a bank account first')
+      }
+      this.options = { ...this.options, itemId: items[0]!.id }
     }
 
     const dateFrom = this.options.dateFrom ?? this._daysAgo(90)

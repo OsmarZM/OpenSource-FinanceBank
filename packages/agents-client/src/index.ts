@@ -24,10 +24,20 @@ export interface EngineResultPayload {
   monthly?: unknown[]
 }
 
+export interface AgentsUsageStats {
+  input_tokens: number
+  output_tokens: number
+  total_tokens: number
+  estimated_cost_usd: number
+  model: string
+}
+
 export interface AgentsAnalyzeResponse {
   insights: Insight[]
   provider: string
   model: string
+  /** Token usage and estimated cost — only present when LLM_PROVIDER=bedrock */
+  usage?: AgentsUsageStats
 }
 
 export interface AgentsHealthResponse {

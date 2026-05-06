@@ -62,14 +62,18 @@ def _format_patterns(patterns: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def generate_insights(engine_result: dict[str, Any]) -> list[dict[str, Any]]:
+def generate_insights(
+    engine_result: dict[str, Any],
+) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
     """
     Generates AI insights from an EngineResult dict.
-    Falls back to an empty list if LLM_PROVIDER=none or on error.
+
+    Returns:
+        (insights, usage_stats) where usage_stats is None if LLM_PROVIDER=none.
     """
     provider = get_provider()
     if provider is None:
-        return []
+        return [], None
 
     total_income: float = engine_result.get("totalIncome", 0)
     total_expenses: float = engine_result.get("totalExpenses", 0)
@@ -101,4 +105,9 @@ def generate_insights(engine_result: dict[str, Any]) -> list[dict[str, Any]]:
         if not insight.get("id"):
             insight["id"] = f"llm-{uuid.uuid4().hex[:8]}"
 
-    return insights
+    # Extract usage stats if the provider supports it (BedrockProvider)
+    usage: dict[str, Any] | None = None
+    if hasattr(provider, "last_usage") and provider.last_usage is not None:
+        usage = provider.last_usage.to_dict()
+
+    return insights, usage

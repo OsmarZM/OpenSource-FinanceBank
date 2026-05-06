@@ -58,10 +58,19 @@ class AnalyzeRequest(BaseModel):
     monthly: list[dict[str, Any]] = []
 
 
+class UsageStats(BaseModel):
+    input_tokens: int = 0
+    output_tokens: int = 0
+    total_tokens: int = 0
+    estimated_cost_usd: float = 0.0
+    model: str = ""
+
+
 class AnalyzeResponse(BaseModel):
     insights: list[dict[str, Any]]
     provider: str
     model: str
+    usage: UsageStats | None = None
 
 
 @app.get("/health")
@@ -96,7 +105,7 @@ def analyze(body: AnalyzeRequest) -> AnalyzeResponse:
     )
 
     try:
-        insights = generate_insights(body.model_dump())
+        insights, usage_dict = generate_insights(body.model_dump())
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -104,4 +113,5 @@ def analyze(body: AnalyzeRequest) -> AnalyzeResponse:
         insights=insights,
         provider=provider.name if provider else "none",
         model=model,
+        usage=UsageStats(**usage_dict) if usage_dict else None,
     )

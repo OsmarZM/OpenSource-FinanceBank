@@ -9,13 +9,14 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   const clientId = process.env['PLUGGY_CLIENT_ID']
   const clientSecret = process.env['PLUGGY_CLIENT_SECRET']
-  const itemId = process.env['PLUGGY_SANDBOX_ITEM_ID']
+  // itemId is optional — auto-discovered from GET /items if not set
+  const itemId = process.env['PLUGGY_SANDBOX_ITEM_ID'] || undefined
 
-  if (!clientId || !clientSecret || !itemId) {
+  if (!clientId || !clientSecret) {
     return NextResponse.json(
       {
         error: 'Pluggy credentials not configured',
-        hint: 'Set PLUGGY_CLIENT_ID, PLUGGY_CLIENT_SECRET, and PLUGGY_SANDBOX_ITEM_ID in .env',
+        hint: 'Set PLUGGY_CLIENT_ID and PLUGGY_CLIENT_SECRET in .env',
       },
       { status: 503 },
     )
@@ -29,7 +30,7 @@ export async function GET() {
 
     if (transactions.length === 0) {
       return NextResponse.json(
-        { error: 'No transactions returned from Pluggy', itemId },
+        { error: 'No transactions returned from Pluggy. Connect a bank account in the Pluggy dashboard first.' },
         { status: 404 },
       )
     }

@@ -4,11 +4,13 @@ version = "0.1.0"
 description = "FinEngine OSS — AI agents sidecar (LLM-powered insights)"
 requires-python = ">=3.11"
 dependencies = [
-    "boto3>=1.35.0",           # AWS Bedrock
+    "boto3>=1.35.0",           # AWS Bedrock (IAM auth fallback)
+    "fastapi>=0.115.0",        # HTTP server
+    "uvicorn[standard]>=0.30.0", # ASGI runner
     "openai>=1.50.0",          # OpenAI
     "anthropic>=0.36.0",       # Anthropic direct
     "google-genai>=1.0.0",     # Google Gemini
-    "httpx>=0.27.0",           # Ollama + HTTP
+    "httpx>=0.27.0",           # Bedrock Bearer + Ollama
     "python-dotenv>=1.0.0",    # .env loading
 ]
 

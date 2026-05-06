@@ -35,6 +35,7 @@ export default function Dashboard() {
   const [aiInsights, setAiInsights] = useState<Insight[] | null>(null)
   const [aiLoading, setAiLoading] = useState(false)
   const [aiError, setAiError] = useState<string | null>(null)
+  const [aiUsage, setAiUsage] = useState<{ input_tokens: number; output_tokens: number; estimated_cost_usd: number } | null>(null)
 
   function loadData(endpoint: string, src: DataSource) {
     setLoading(true)
@@ -42,6 +43,7 @@ export default function Dashboard() {
     setData(null)
     setAiInsights(null)
     setAiError(null)
+    setAiUsage(null)
     fetch(endpoint)
       .then((r) => r.json())
       .then((d: EngineResult & { error?: string }) => {
@@ -234,6 +236,7 @@ export default function Dashboard() {
               insights={aiInsights}
               loading={aiLoading}
               error={aiError}
+              usage={aiUsage}
               onGenerate={() => {
                 setAiLoading(true)
                 setAiError(null)
@@ -243,9 +246,10 @@ export default function Dashboard() {
                   body: JSON.stringify(data),
                 })
                   .then((r) => r.json())
-                  .then((res: { insights?: Insight[]; error?: string }) => {
+                  .then((res: { insights?: Insight[]; error?: string; usage?: { input_tokens: number; output_tokens: number; estimated_cost_usd: number } }) => {
                     if (res.error) throw new Error(res.error)
                     setAiInsights(res.insights ?? [])
+                    setAiUsage(res.usage ?? null)
                     setAiLoading(false)
                   })
                   .catch((e: Error) => {
