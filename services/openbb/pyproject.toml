@@ -1,0 +1,28 @@
+[project]
+name = "fin-engine-openbb"
+version = "0.1.0"
+description = "FinEngine OSS — OpenBB market data sidecar (FastAPI)"
+requires-python = ">=3.11"
+dependencies = [
+    "openbb>=4.3.0",              # Core OpenBB Platform
+    "openbb-equity>=1.3.0",       # Equities (quotes, historical)
+    "openbb-currency>=1.2.0",     # FX pairs
+    "openbb-index>=1.2.0",        # Market indices
+    "openbb-news>=1.0.0",         # Company news
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "httpx>=0.27.0",
+    "python-dotenv>=1.0.0",
+    "supabase>=2.9.0",            # Read analysis sessions for Workspace endpoints
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "httpx>=0.27.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

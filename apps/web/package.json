@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fin-engine/agents-client": "workspace:*",
+    "@fin-engine/connector-pluggy": "workspace:*",
+    "@fin-engine/core": "workspace:*",
     "next": "15.5.15",
     "react": "19.1.0",
     "react-dom": "19.1.0",

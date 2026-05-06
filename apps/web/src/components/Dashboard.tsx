@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { EngineResult } from '@/lib/types'
+import type { EngineResult, Insight } from '@/lib/types'
 import SummaryCard from './SummaryCard'
 import CategoryChart from './CategoryChart'
 import MonthlyChart from './MonthlyChart'
 import InsightsList from './InsightsList'
 import TransactionList from './TransactionList'
+import AIInsights from './AIInsights'
+import MarketWidget from './MarketWidget'
 import { formatBRL } from '@/lib/format'
 
 function Skeleton({ className = '' }: { className?: string }) {
@@ -22,24 +24,51 @@ function Skeleton({ className = '' }: { className?: string }) {
   )
 }
 
+type DataSource = 'mock' | 'pluggy'
+
 export default function Dashboard() {
   const [data, setData] = useState<EngineResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [source, setSource] = useState<DataSource>('mock')
+  const [pluggyLoading, setPluggyLoading] = useState(false)
+  const [aiInsights, setAiInsights] = useState<Insight[] | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiError, setAiError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetch('/api/analyze')
+  function loadData(endpoint: string, src: DataSource) {
+    setLoading(true)
+    setError(null)
+    setData(null)
+    setAiInsights(null)
+    setAiError(null)
+    fetch(endpoint)
       .then((r) => r.json())
-      .then((d: EngineResult) => {
+      .then((d: EngineResult & { error?: string }) => {
+        if (d.error) throw new Error(d.error)
         setData(d)
+        setSource(src)
         setLoading(false)
       })
       .catch((e: Error) => {
-        setError('Falha ao carregar os dados financeiros. Tente novamente.')
-        console.error(e)
+        setError(e.message || 'Falha ao carregar os dados financeiros.')
         setLoading(false)
       })
+  }
+
+  useEffect(() => {
+    loadData('/api/analyze', 'mock')
   }, [])
+
+  function connectPluggy() {
+    setPluggyLoading(true)
+    loadData('/api/pluggy', 'pluggy')
+    setPluggyLoading(false)
+  }
+
+  function loadMock() {
+    loadData('/api/analyze', 'mock')
+  }
 
   if (error) {
     return (
@@ -71,16 +100,32 @@ export default function Dashboard() {
               <span className="text-blue-400 text-lg font-bold"> OSS</span>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {data && (
               <span className="text-xs text-gray-500 hidden sm:block">
                 {data.period.from} — {data.period.to}
               </span>
             )}
-            <div className="flex items-center gap-1.5 text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot" />
-              Dados simulados
-            </div>
+            {/* Data source badge */}
+            {source === 'pluggy' ? (
+              <div className="flex items-center gap-1.5 text-xs bg-blue-500/10 border border-blue-500/20 text-blue-400 px-3 py-1.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 pulse-dot" />
+                Pluggy sandbox
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot" />
+                Dados simulados
+              </div>
+            )}
+            {/* Source switcher buttons */}
+            <button
+              onClick={source === 'mock' ? connectPluggy : loadMock}
+              disabled={loading || pluggyLoading}
+              className="text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:bg-blue-600/20 hover:border-blue-500/30 hover:text-blue-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              {source === 'mock' ? '🔗 Pluggy sandbox' : '🔄 Voltar mock'}
+            </button>
           </div>
         </div>
       </header>
@@ -99,6 +144,11 @@ export default function Dashboard() {
               ? 'Carregando análise...'
               : `${data?.transactions.length} transações analisadas nos últimos ${data?.period.days ?? 0} dias`}
           </p>
+        </section>
+
+        {/* Market Data */}
+        <section className="fade-up" style={{ animationDelay: '100ms' }}>
+          <MarketWidget />
         </section>
 
         {/* Summary Cards */}
@@ -165,7 +215,7 @@ export default function Dashboard() {
           ) : null}
         </section>
 
-        {/* Insights */}
+        {/* Rule-based Insights */}
         <section>
           {loading ? (
             <Skeleton className="h-64" />
@@ -175,6 +225,37 @@ export default function Dashboard() {
             </div>
           ) : null}
         </section>
+
+        {/* AI Insights (Claude Haiku via Bedrock) */}
+        {data && (
+          <section className="fade-up" style={{ animationDelay: '450ms' }}>
+            <AIInsights
+              engineResult={data}
+              insights={aiInsights}
+              loading={aiLoading}
+              error={aiError}
+              onGenerate={() => {
+                setAiLoading(true)
+                setAiError(null)
+                fetch('/api/insights', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(data),
+                })
+                  .then((r) => r.json())
+                  .then((res: { insights?: Insight[]; error?: string }) => {
+                    if (res.error) throw new Error(res.error)
+                    setAiInsights(res.insights ?? [])
+                    setAiLoading(false)
+                  })
+                  .catch((e: Error) => {
+                    setAiError(e.message || 'Falha ao gerar insights.')
+                    setAiLoading(false)
+                  })
+              }}
+            />
+          </section>
+        )}
 
         {/* Transactions */}
         <section>

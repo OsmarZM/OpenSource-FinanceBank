@@ -3,10 +3,12 @@ AWS Bedrock LLM provider.
 
 Required environment variables:
   AWS_REGION                  (default: us-east-1)
-  AWS_BEARER_TOKEN_BEDROCK    Bearer token for Bedrock API key auth
-  LLM_MODEL                   Bedrock model ID (default below)
+  AWS_ACCESS_KEY_ID           AWS credentials (standard boto3 env vars)
+  AWS_SECRET_ACCESS_KEY       AWS credentials
+  BEDROCK_MODEL_ID            Bedrock model ID (default: Claude Haiku 4.5)
 
-Default model: anthropic.claude-3-5-sonnet-20241022-v2:0
+Default model: anthropic.claude-haiku-4-5-20251022-v1:0 (Claude Haiku 4.5)
+Approximate cost: ~$1.00/M input tokens, ~$5.00/M output tokens.
 """
 from __future__ import annotations
 
@@ -15,7 +17,8 @@ import os
 
 from .base import LLMProvider
 
-DEFAULT_MODEL = "anthropic.claude-3-5-sonnet-20241022-v2:0"
+# Claude Haiku 4.5 — fast and cost-effective for financial insights
+DEFAULT_MODEL = "anthropic.claude-haiku-4-5-20251022-v1:0"
 
 
 class BedrockProvider(LLMProvider):
@@ -27,7 +30,8 @@ class BedrockProvider(LLMProvider):
         import boto3  # type: ignore[import-untyped]
 
         region = os.getenv("AWS_REGION", "us-east-1")
-        model_id = os.getenv("LLM_MODEL", DEFAULT_MODEL)
+        # Prefer BEDROCK_MODEL_ID, fall back to LLM_MODEL for backwards compat
+        model_id = os.getenv("BEDROCK_MODEL_ID") or os.getenv("LLM_MODEL", DEFAULT_MODEL)
 
         client = boto3.client("bedrock-runtime", region_name=region)
 

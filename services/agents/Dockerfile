@@ -13,8 +13,13 @@ RUN uv pip install --system \
     anthropic \
     google-genai \
     httpx \
-    python-dotenv
+    python-dotenv \
+    fastapi \
+    "uvicorn[standard]"
 
 COPY src/ ./src/
 
-CMD ["python", "-m", "agents"]
+EXPOSE 8000
+
+# HTTP mode by default (docker); stdio mode available via: python -m agents
+CMD ["uvicorn", "agents.server:app", "--host", "0.0.0.0", "--port", "8000"]
