@@ -70,7 +70,7 @@ export default function AIInsights({ insights, loading, error, usage, onGenerate
           </p>
           {/* Cost badge — shown after a successful generation */}
           {usage && (
-            <div className="flex items-center gap-3 mt-2">
+            <div className="flex items-center gap-3 mt-2 flex-wrap">
               <span className="text-xs text-gray-600 font-mono">
                 {usage.input_tokens.toLocaleString()} in · {usage.output_tokens.toLocaleString()} out tokens
               </span>

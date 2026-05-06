@@ -29,7 +29,7 @@ export default function DesktopHeader({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo + Title */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <motion.div
             className="flex items-center gap-3"
             whileHover={{ x: 2 }}
@@ -39,7 +39,7 @@ export default function DesktopHeader({
               💰
             </div>
             <div>
-              <h1 className="font-bold text-white text-lg tracking-tight">{title}</h1>
+              <h1 className="font-bold text-white text-lg tracking-tight truncate">{title}</h1>
               <p className="text-xs text-gray-500">{subtitle}</p>
             </div>
           </motion.div>
@@ -70,7 +70,7 @@ export default function DesktopHeader({
         <motion.div
           initial={{ x: 20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          className="flex-1 flex justify-end items-center gap-3"
+          className="flex-shrink-0 flex justify-end items-center gap-2 sm:gap-3"
         >
           <ThemeToggle />
           {rightContent}

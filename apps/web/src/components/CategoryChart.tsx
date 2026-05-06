@@ -46,18 +46,18 @@ export default function CategoryChart({ data }: Props) {
       <div className="space-y-4 overflow-y-auto pr-2" style={{ maxHeight: '280px' }}>
         {top.map((cat, i) => (
           <div key={cat.category} className="group">
-            <div className="flex items-center justify-between mb-1.5">
-              <div className="flex items-center gap-2">
-                <span className="text-base leading-none">{getCategoryIcon(cat.category)}</span>
-                <span className="text-sm text-gray-300 font-medium">
+            <div className="flex items-center justify-between mb-1.5 gap-2">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className="text-base leading-none flex-shrink-0">{getCategoryIcon(cat.category)}</span>
+                <span className="text-sm text-gray-300 font-medium truncate">
                   {getCategoryLabel(cat.category)}
                 </span>
-                <span className="text-xs text-gray-600 bg-white/5 px-1.5 py-0.5 rounded-full">
+                <span className="text-xs text-gray-600 bg-white/5 px-1.5 py-0.5 rounded-full flex-shrink-0">
                   {cat.count}×
                 </span>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-mono text-gray-400">{cat.percentage.toFixed(1)}%</span>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-xs font-mono text-gray-400">{cat.percentage.toFixed(1)}%</span>
                 <span className="text-sm font-semibold text-white tabular-nums">
                   {formatBRL(cat.total)}
                 </span>

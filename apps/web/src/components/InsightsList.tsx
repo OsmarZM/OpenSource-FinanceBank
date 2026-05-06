@@ -49,12 +49,12 @@ export default function InsightsList({ insights }: Props) {
 
   return (
     <div className="glass-card p-6">
-      <div className="flex items-center justify-between mb-5">
-        <div>
+      <div className="flex items-center justify-between mb-5 gap-3">
+        <div className="min-w-0 flex-1">
           <h2 className="text-lg font-semibold text-white mb-1">Insights</h2>
           <p className="text-sm text-gray-500">Análise automática do seu perfil financeiro</p>
         </div>
-        <span className="text-sm bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full font-medium">
+        <span className="text-sm bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full font-medium flex-shrink-0">
           {insights.length} análises
         </span>
       </div>

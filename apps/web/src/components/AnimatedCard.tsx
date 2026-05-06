@@ -77,7 +77,7 @@ export default function AnimatedCard({
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={clsx(
-        'relative p-5 rounded-2xl border backdrop-blur-xl',
+        'relative p-4 sm:p-5 rounded-2xl border backdrop-blur-xl',
         'cursor-pointer group transition-all',
         'bg-gradient-to-br',
         colorClass.bg,
@@ -141,7 +141,7 @@ export default function AnimatedCard({
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={clsx('text-2xl sm:text-3xl font-bold', colorClass.text)}
+          className={clsx('text-xl sm:text-2xl font-bold break-all', colorClass.text)}
         >
           {value}
         </motion.p>

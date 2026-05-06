@@ -267,7 +267,7 @@ export default function Dashboard() {
                 <Skeleton className="h-72" />
               </div>
             ) : data ? (
-              <div className="grid md:grid-cols-2 gap-4 space-y-4 md:space-y-0">
+              <div className="grid md:grid-cols-2 gap-4">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}

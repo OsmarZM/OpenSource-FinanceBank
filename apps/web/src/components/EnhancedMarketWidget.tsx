@@ -49,8 +49,8 @@ function MarketCard({ data, isUp }: { data: MarketData; isUp: boolean }) {
         </motion.div>
       </div>
 
-      <div className="flex items-baseline gap-2">
-        <span className={clsx('text-lg font-bold', isUp ? 'text-green-400' : 'text-red-400')}>
+      <div className="flex items-baseline gap-2 flex-wrap">
+        <span className={clsx('text-base sm:text-lg font-bold', isUp ? 'text-green-400' : 'text-red-400')}>
           {data.price.toFixed(2)}
         </span>
         <span
